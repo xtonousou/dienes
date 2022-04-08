@@ -1,0 +1,11 @@
+[Unit]
+Description=Dienes Socket
+
+[Socket]
+ListenStream=/opt/dienes/dienes.socket
+SocketUser=dienes
+SocketGroup=nginx
+SocketMode=770
+
+[Install]
+WantedBy=sockets.target

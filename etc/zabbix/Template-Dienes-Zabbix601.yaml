@@ -1,0 +1,276 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-04-07T21:22:28Z'
+  groups:
+    -
+      uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    -
+      uuid: 848f619287d64479bcea819c036c0b4a
+      template: 'Dienes by HTTP'
+      name: 'Dienes by HTTP'
+      groups:
+        -
+          name: Templates
+      items:
+        -
+          uuid: 04cf9121476042519da33efd4b9fa1f1
+          name: 'Dienes health master item'
+          type: HTTP_AGENT
+          key: dienes.health
+          delay: 30s
+          trends: '0'
+          value_type: TEXT
+          authtype: BASIC
+          username: '{$HTTP.AUTH.BASIC.USERNAME}'
+          password: '{$HTTP.AUTH.BASIC.PASSWORD}'
+          timeout: 5s
+          url: '{$HTTP.URL}'
+          output_format: JSON
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: api
+          triggers:
+            -
+              uuid: 99948e29aa644300aa41a133161f9c8a
+              expression: 'nodata(/Dienes by HTTP/dienes.health,120s)=1'
+              name: 'Dienes is down or unreachable'
+              priority: DISASTER
+              tags:
+                -
+                  tag: application
+                  value: dienes
+        -
+          uuid: 9e1e1d58f9f4400db24fd26b6ab9945b
+          name: 'Dienes number of total pending instructions'
+          type: DEPENDENT
+          key: dienes.health.data.pending
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.data[0].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: data
+            -
+              tag: sub-component
+              value: pending
+        -
+          uuid: 49805d200cf441c6b37b6e1823f8ff4d
+          name: 'Dienes number of stale instructions'
+          type: DEPENDENT
+          key: dienes.health.data.stale
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.data[1].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: data
+            -
+              tag: sub-component
+              value: stale
+        -
+          uuid: 715b71092e2a473ea0f10191cc07f545
+          name: 'Dienes Redis health'
+          type: DEPENDENT
+          key: dienes.health.redis
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.redis[0].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: redis
+          triggers:
+            -
+              uuid: a74e63c890014d7baec9dd9c08e344ec
+              expression: 'last(/Dienes by HTTP/dienes.health.redis)=0'
+              name: 'Redis is not healthy'
+              priority: DISASTER
+              tags:
+                -
+                  tag: application
+                  value: dienes
+        -
+          uuid: 3294ac255d8e4c7bb017e73fea8c34f2
+          name: 'Dienes Hashicorp Vault health'
+          type: DEPENDENT
+          key: dienes.health.vault
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.vault[0].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: vault
+          triggers:
+            -
+              uuid: 93e5607ef6374fd5933d9a82b07e5bd4
+              expression: 'last(/Dienes by HTTP/dienes.health.vault)=0'
+              name: 'Hashicorp Vault is sealed or not initialized'
+              priority: DISASTER
+              tags:
+                -
+                  tag: application
+                  value: dienes
+        -
+          uuid: 1ea6ac7beb9048fb8e295eb737c00d19
+          name: 'Dienes WinRM over HTTP health'
+          type: DEPENDENT
+          key: dienes.health.winrm
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.winrm[0].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: winrm
+          triggers:
+            -
+              uuid: a4088ea958844340bde1f556896579b1
+              expression: 'last(/Dienes by HTTP/dienes.health.winrm)=0'
+              name: 'Cannot establish WinRM connection over HTTP to MS Active Directory'
+              priority: DISASTER
+              tags:
+                -
+                  tag: application
+                  value: dienes
+        -
+          uuid: 301092bff53b4258885a5a015cf928d4
+          name: 'Dienes WinRM over HTTPS health'
+          type: DEPENDENT
+          key: dienes.health.winrms
+          delay: '0'
+          valuemap:
+            name: 'Dienes Value Mapping'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.body.detail.winrms[0].state'
+          master_item:
+            key: dienes.health
+          tags:
+            -
+              tag: application
+              value: dienes
+            -
+              tag: component
+              value: winrms
+          triggers:
+            -
+              uuid: 4c9e3f15085c47a9a7fa1e8b70c7f786
+              expression: 'last(/Dienes by HTTP/dienes.health.winrms)=0'
+              name: 'Cannot establish WinRM connection over HTTPS to MS Active Directory'
+              priority: DISASTER
+              tags:
+                -
+                  tag: application
+                  value: dienes
+      tags:
+        -
+          tag: application
+          value: dienes
+      macros:
+        -
+          macro: '{$HTTP.AUTH.BASIC.PASSWORD}'
+          value: password
+        -
+          macro: '{$HTTP.AUTH.BASIC.USERNAME}'
+          value: username
+        -
+          macro: '{$HTTP.URL}'
+          value: 'http://dienes.domain.tld/health'
+      valuemaps:
+        -
+          uuid: 7fb344c8a7d546c49e94554708b0411c
+          name: 'Dienes Value Mapping'
+          mappings:
+            -
+              value: '0'
+              newvalue: Unhealthy
+            -
+              value: '1'
+              newvalue: Healthy
+  triggers:
+    -
+      uuid: 0d45cd7bd0444502a4365462e291c169
+      expression: 'last(/Dienes by HTTP/dienes.health.data.pending)=last(/Dienes by HTTP/dienes.health.data.stale)'
+      name: 'All of the pending instructions are stale'
+      priority: HIGH
+      tags:
+        -
+          tag: application
+          value: dienes
+  graphs:
+    -
+      uuid: aeae4bc545ad4e08b9574111a372adc4
+      name: 'Dienes instructions'
+      graph_items:
+        -
+          color: FF0000
+          item:
+            host: 'Dienes by HTTP'
+            key: dienes.health.data.stale
+        -
+          sortorder: '1'
+          color: 00FF00
+          item:
+            host: 'Dienes by HTTP'
+            key: dienes.health.data.pending

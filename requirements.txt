@@ -1,0 +1,15 @@
+fastapi
+pyyaml
+redis
+pypsrp[kerberos]
+ujson
+pydantic
+gunicorn
+uvicorn[standard]
+celery[redis]
+uvloop
+httptools
+hvac
+Jinja2
+ipaddress
+slowapi

@@ -1,0 +1,18 @@
+# DNS
+Path: dienes/dns
+Secret: credentials
+
+    cert_validation: bool (True|False)
+    domain: string (netbios)
+    host: string (ip|fqdn)
+    username: string
+    password: string
+    winrm_port: int (5985)
+    winrms_port: int (5986)
+
+# API
+Path: dienes/api/users
+Secret: {user}
+
+    password: string
+    role: string (admin|user)

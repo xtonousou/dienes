@@ -1,0 +1,18 @@
+[Unit]
+Description=Dienes API Service
+Requires=dienes.socket
+After=network.target
+
+[Service]
+Type=notify
+User=dienes
+Group=nginx
+WorkingDirectory=/opt/dienes
+ExecStart=/usr/local/bin/gunicorn api:dienes -w 4 -k uvicorn.workers.UvicornWorker -b unix:/opt/dienes/dienes.socket -m 007 --preload
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+Add-DnsServerPrimaryZone -NetworkID "{{ network_id }}" -ReplicationScope {{ replication_scope }} -ErrorVariable AddZoneError -ErrorAction SilentlyContinue -Verbose
+if ($AddZoneError[0].CategoryInfo.Category -ne 'ResourceExists' -And $AddZoneError -ne $null) {
+	throw
+}
+
+$NodeDNS = Get-DnsServerResourceRecord -ZoneName {{ zone }} -Node {{ name }} -RRType A -ErrorVariable GetRecordError -ErrorAction SilentlyContinue -Verbose
+if ($NodeDNS -eq $null) {
+	Add-DnsServerResourceRecordAAAA {{ ptr }} -Name "{{ name }}" -ZoneName "{{ zone }}" -IPv6Address "{{ ip }}" -TimeToLive {{ ttl }} -Verbose
+} elseif ($NodeDNS.RecordData.IPv6Address.IPAddressToString -ne "{{ ip }}" -Or $NodeDNS.HostName -ne "{{ name }}") {
+	Remove-DnsServerResourceRecord -ZoneName {{ zone }} -InputObject $NodeDNS -Force -Verbose
+	Add-DnsServerResourceRecordAAAA {{ ptr }} -Name "{{ name }}" -ZoneName "{{ zone }}" -IPv6Address "{{ ip }}" -TimeToLive {{ ttl }} -Verbose
+}

@@ -1,0 +1,8 @@
+__pycache__/
+venv/
+celerybeat-schedule
+conf.yml
+.env
+*.py[co]
+*.swp
+client.py
