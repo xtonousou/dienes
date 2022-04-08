@@ -1,6 +1,6 @@
 # dienes
 
-<p align="center"><img width=50% src="media/logo.png"></img></p>
+<p align="center"><img width=50% src="media/logo.png"></img></p></br>
 <p align="center">Simple & Async API to add, update and remove DNS records to/from MS Windows DNS Server</p>
 
 ---
