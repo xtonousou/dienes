@@ -1,0 +1,49 @@
+---
+redis:
+  socket: /var/run/redis/redis.sock
+  database: 0
+  key: records
+  connect_timeout: 3
+vault:
+  token: TOKEN_HERE
+  host: https://vault.domain.tld:8200
+  ssl_verify: false
+  paths:
+    dns: dienes/dns
+    api: dienes/api/users
+powershell:
+  tasks:
+    add_delete_records:
+      interval: 60
+      limit: 32
+dns:
+  zone:
+    replication_scope: Forest
+    split:
+      ipv4: /24
+      ipv6: /48
+api:
+  limit: 256/minute
+  cors:
+    origins:
+      - "http://localhost"
+      - "https://localhost"
+      - "http://localhost:8000"
+      - "https://localhost:8000"
+    credentials: true
+    methods:
+      - HEAD
+      - GET
+      - POST
+  allowed_hosts:
+    - localhost
+    - dienes.domain.tld
+  gzip:
+    minimum_size: 1024
+  healthcheck:
+    services:
+      - redis
+      - vault
+      - winrm
+      - winrms
+      - data
